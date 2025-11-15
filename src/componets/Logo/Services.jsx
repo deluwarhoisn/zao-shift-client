@@ -25,7 +25,7 @@ const Services = () => {
                 </div>
 
                 {/* Card 2 */}
-                <div className="bg-[#e7f8c9] rounded-2xl p-8 shadow-xl text-gray-800">
+                <div className="bg-[#95da20] rounded-2xl p-8 shadow-xl text-gray-800">
                     <img src="/icons/nationwide.png" alt="" className="w-14 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold mb-3">Nationwide Delivery</h3>
                     <p>
