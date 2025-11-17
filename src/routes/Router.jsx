@@ -24,7 +24,8 @@ element: <PriveteRoute><Rider></Rider></PriveteRoute>
     },
     {
    path:'send-parcel',
-   element: <PriveteRoute><SendParcel></SendParcel></PriveteRoute>
+   element: <SendParcel></SendParcel>,
+   loader:() => fetch('/serviceCenter.json').then(res => res.json())
     },
     {
       path:'coverage',
