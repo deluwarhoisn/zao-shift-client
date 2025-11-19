@@ -26,7 +26,7 @@ element: <PriveteRoute><Rider></Rider></PriveteRoute>
     },
     {
    path:'send-parcel',
-   element: <SendParcel></SendParcel>,
+   element: <PriveteRoute><SendParcel></SendParcel></PriveteRoute>,
    loader:() => fetch('/serviceCenter.json').then(res => res.json())
     },
     {
@@ -53,7 +53,7 @@ element: <PriveteRoute><Rider></Rider></PriveteRoute>
   },
   {
     path:'dashboard',
-    element: <DashboardLayout></DashboardLayout>,
+    element: <PriveteRoute><DashboardLayout></DashboardLayout></PriveteRoute>,
     children: [
       {
         path: 'my-parcels',
