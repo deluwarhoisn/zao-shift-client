@@ -1,22 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { } from 'react';
-import UseAuth from '../../../hooks/UseAuth';
-import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
-import { FiEdit, FiEdit2 } from 'react-icons/fi';
+import React from 'react';
+import useAuth from '../../../hooks/UseAuth';
+import useAxiosSecure from '../../../hooks/UseAxiosSecure';
+import { FiEdit } from 'react-icons/fi';
 import { FaMagnifyingGlass, FaTrashCan } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router';
 
 const MyParcels = () => {
-    const { user } = UseAuth();
-    const axiosSecure = UseAxiosSecure();
+    const { user } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
-    const { data: parcels = [], refetch  } = useQuery({
-        queryKey: ['my-parcels', user.email],
+    const { data: parcels = [], refetch } = useQuery({
+        queryKey: ['my-parcels', user?.email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/parcels?email=${user.email}`);
             return res.data;
-
         }
     })
 
@@ -34,42 +33,59 @@ const MyParcels = () => {
         }).then((result) => {
             if (result.isConfirmed) {
 
-                axiosSecure.delete(`/parcels${id}`)
+                axiosSecure.delete(`/parcels/${id}`)
                     .then(res => {
                         console.log(res.data);
 
                         if (res.data.deletedCount) {
+                            // refresh the data in the ui
                             refetch();
+
                             Swal.fire({
                                 title: "Deleted!",
-                                text: "Your Parcels Request has bin  deleted.",
+                                text: "Your parcel request has been deleted.",
                                 icon: "success"
                             });
                         }
+
                     })
 
 
             }
         });
+
+    }
+
+    const handlePayment = async (parcel) => {
+        const paymentInfo = {
+            cost: parcel.cost,
+            parcelId: parcel._id, 
+            senderEmail: parcel.senderEmail,
+            parcelName: parcel.parcelName
+        }
+        const res = await axiosSecure.post('/payment-checkout-session', paymentInfo);
+
+        console.log(res.data.url);
+        window.location.assign(res.data.url);
     }
 
     return (
         <div>
-            <h1>All of my parcels: {parcels.length} </h1>
+            <h2>All of my parcels : {parcels.length}</h2>
             <div className="overflow-x-auto">
-                <table className="table table-zebra ">
+                <table className="table table-zebra">
                     {/* head */}
-                    <thead className=''>
+                    <thead>
                         <tr>
                             <th></th>
                             <th>Name</th>
                             <th>Cost</th>
-                            <th>Payment </th>
+                            <th>Payment</th>
                             <th>Delivery Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody className=''>
+                    <tbody>
                         {
                             parcels.map((parcel, index) => <tr key={parcel._id}>
                                 <th>{index + 1}</th>
@@ -77,19 +93,29 @@ const MyParcels = () => {
                                 <td>{parcel.cost}</td>
                                 <td>
                                     {
-                                        parcel.paymentStatus === 'paid'? <span className='text-green-500'>paid</span> :
-                                        <Link to={`/dashboard/payment/${parcel._id}`}><button className='btn btn-primary text-black btn-sm'>Pay</button></Link>
+                                        parcel.paymentStatus === 'paid' ?
+                                            <span className='text-green-400'>Paid</span>
+                                            :
+                                            <button onClick={() => handlePayment(parcel)} className="btn btn-sm btn-primary text-black">Pay</button>
+
                                     }
                                 </td>
                                 <td>{parcel.deliveryStatus}</td>
-                                <td className=''>
-                                    <button className='btn btn-square hover:bg-primary'><FaMagnifyingGlass /> </button>
-                                    <button className='btn btn-square hover:bg-primary'><FiEdit /> </button>
-                                    <button onClick={() => handleParcelDelete(parcel._id)} className='btn btn-square hover:bg-primary'><FaTrashCan /> </button>
+                                <td>
+                                    <button className='btn btn-square hover:bg-primary'>
+                                        <FaMagnifyingGlass />
+                                    </button>
+                                    <button className='btn btn-square hover:bg-primary mx-2'>
+                                        <FiEdit></FiEdit>
+                                    </button>
+                                    <button
+                                        onClick={() => handleParcelDelete(parcel._id)}
+                                        className='btn btn-square hover:bg-primary'>
+                                        <FaTrashCan />
+                                    </button>
                                 </td>
                             </tr>)
                         }
-
 
                     </tbody>
                 </table>
