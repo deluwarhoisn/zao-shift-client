@@ -1,23 +1,99 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { } from 'react';
 import UseAuth from '../../../hooks/UseAuth';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
+import { FiEdit, FiEdit2 } from 'react-icons/fi';
+import { FaMagnifyingGlass, FaTrashCan } from 'react-icons/fa6';
+import Swal from 'sweetalert2';
+import { Link } from 'react-router';
 
 const MyParcels = () => {
     const { user } = UseAuth();
     const axiosSecure = UseAxiosSecure();
 
-    const { data: parcel = []} = useQuery({
-        queryKey: ['myParcels', user?.email],
+    const { data: parcels = [], refetch  } = useQuery({
+        queryKey: ['my-parcels', user.email],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/parcels?email=${user.email}`)
+            const res = await axiosSecure.get(`/parcels?email=${user.email}`);
             return res.data;
+
         }
     })
 
+    const handleParcelDelete = id => {
+        console.log(id);
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                axiosSecure.delete(`/parcels${id}`)
+                    .then(res => {
+                        console.log(res.data);
+
+                        if (res.data.deletedCount) {
+                            refetch();
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your Parcels Request has bin  deleted.",
+                                icon: "success"
+                            });
+                        }
+                    })
+
+
+            }
+        });
+    }
+
     return (
         <div>
-            <h1>All of my parcels: {parcel.length} </h1>
+            <h1>All of my parcels: {parcels.length} </h1>
+            <div className="overflow-x-auto">
+                <table className="table table-zebra ">
+                    {/* head */}
+                    <thead className=''>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Cost</th>
+                            <th>Payment </th>
+                            <th>Delivery Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className=''>
+                        {
+                            parcels.map((parcel, index) => <tr key={parcel._id}>
+                                <th>{index + 1}</th>
+                                <td>{parcel.parcelName}</td>
+                                <td>{parcel.cost}</td>
+                                <td>
+                                    {
+                                        parcel.paymentStatus === 'paid'? <span className='text-green-500'>paid</span> :
+                                        <Link to={`/dashboard/payment/${parcel._id}`}><button className='btn btn-primary text-black btn-sm'>Pay</button></Link>
+                                    }
+                                </td>
+                                <td>{parcel.deliveryStatus}</td>
+                                <td className=''>
+                                    <button className='btn btn-square hover:bg-primary'><FaMagnifyingGlass /> </button>
+                                    <button className='btn btn-square hover:bg-primary'><FiEdit /> </button>
+                                    <button onClick={() => handleParcelDelete(parcel._id)} className='btn btn-square hover:bg-primary'><FaTrashCan /> </button>
+                                </td>
+                            </tr>)
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
