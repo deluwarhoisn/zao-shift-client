@@ -5,75 +5,73 @@ import Coverage from "../pages/Coverage/Coverage";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
-import PriveteRoute from "./PriveteRoute";
+import PrivateRoute from "./PrivateRoute";
 import Rider from "../pages/Rider/Rider";
-import SendParcel from "../pages/SendParcel/SendParcel";
+import SendParcel from "../pages/sendParcel/SendParcel";
 import DashboardLayout from "../layouts/DashboardLayout";
-import MyParcels from "../pages/Dash/MyParcels/MyParcels";
-import Payment from "../pages/Dash/MyParcels/Payment/Payment";
-import PaymentSuccess from "../pages/Dash/MyParcels/Payment/PaymentSuccess";
-import PaymentCancelled from "../pages/Dash/MyParcels/Payment/PaymentCancelled";
+import MyParcels from "../pages/Dashboard/MyParcels/MyParcels";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 
 export const router = createBrowserRouter([
   {
     path: "/",
- Component: RootLayout,
- children: [
-    {
-        index: true,
-        Component: Home
-    },
-    {
-path: 'rider',
-element: <PriveteRoute><Rider></Rider></PriveteRoute>
-    },
-    {
-   path:'send-parcel',
-   element: <PriveteRoute><SendParcel></SendParcel></PriveteRoute>,
-   loader:() => fetch('/serviceCenter.json').then(res => res.json())
-    },
-    {
-      path:'coverage',
-      Component: Coverage,
-      loader:() => fetch('/serviceCenter.json').then(res => res.json())
-    }
- ]
-  },
-  {
-    path: "/",
-    Component: AuthLayout,
-    children:[
-      {
-        path:"login",
-        Component: Login,
-      },
-      {
-        path:"register",
-        Component: Register,
-      },
-    ]
-
-  },
-  {
-    path:'dashboard',
-    element: <PriveteRoute><DashboardLayout></DashboardLayout></PriveteRoute>,
+    Component: RootLayout,
     children: [
       {
-        path: 'my-parcels',
-        Component: MyParcels,
+        index: true,
+        Component: Home
+      },
+      {
+        path: 'rider',
+        element: <PrivateRoute><Rider></Rider></PrivateRoute>
+      },
+      {
+        path: 'send-parcel',
+        element: <PrivateRoute><SendParcel></SendParcel></PrivateRoute>,
+        loader: () => fetch('/serviceCenters.json').then(res => res.json())
+      },
+      {
+        path: 'coverage',
+        Component: Coverage,
+        loader: () => fetch('/serviceCenters.json').then(res => res.json())
+      }
+    ]
+  },
+  {
+    path: '/',
+    Component: AuthLayout,
+    children: [
+      {
+        path: 'login',
+        Component: Login
+      },
+      {
+        path: 'register',
+        Component: Register
+      }
+    ]
+  }, 
+  {
+    path: 'dashboard',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
+      {
+        path: 'my-parcels', 
+        Component: MyParcels
       },
       {
         path: 'payment/:parcelId',
         Component: Payment
-
-      },
+      }, 
       {
         path: 'payment-success',
-        Component: PaymentSuccess,
-      },
+        Component: PaymentSuccess
+      }, 
       {
-        path:'payment-cancelled',
-        Component: PaymentCancelled,
+        path: 'payment-cancelled', 
+        Component: PaymentCancelled
       }
     ]
   }

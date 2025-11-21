@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router';
-import Footer from '../pages/Footer/Footer';
-import Nabvar from '../pages/Navbar/Navbar';
+import Footer from '../pages/Shared/Footer/Footer';
+import NavBar from '../pages/Shared/NavBar/NavBar';
 
 const RootLayout = () => {
     return (
         <div className='max-w-7xl mx-auto'>
-            <Nabvar></Nabvar>
+            <NavBar></NavBar>
             <Outlet></Outlet>
             <Footer></Footer>
         </div>
