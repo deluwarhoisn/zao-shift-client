@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { FaUserCheck } from 'react-icons/fa';
+import { FaEye, FaUserCheck } from 'react-icons/fa';
 import { IoPersonRemoveSharp } from 'react-icons/io5';
 import { FaTrashCan } from 'react-icons/fa6';
 import Swal from 'sweetalert2';
@@ -43,18 +43,19 @@ const ApproveRiders = () => {
     }
 
     return (
-        <div className=''>
+        <div>
             <h2 className="text-5xl">Riders Pending Approval: {riders.length} </h2>
             <div className="overflow-x-auto">
                 <table className="table table-zebra">
                     {/* head */}
-                    <thead className=''>
+                    <thead>
                         <tr>
                             <th></th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>District</th>
-                            <th>status</th>
+                            <th>Application Status</th>
+                            <th>Work Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -68,7 +69,12 @@ const ApproveRiders = () => {
                                 <td>
                                     <p className={`${rider.status === 'approved' ? 'text-green-800' : 'text-red-500'}`}>{rider.status}</p>
                                 </td>
+                                <td>{rider.workStatus}</td>
                                 <td>
+                                    <button
+                                         className='btn'>
+                                        <FaEye></FaEye>
+                                    </button>
                                     <button
                                         onClick={() => handleApproval(rider)} className='btn'>
                                         <FaUserCheck />
