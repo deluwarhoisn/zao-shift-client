@@ -57,7 +57,7 @@ const ApproveRiders = () => {
                             <th>Application Status</th>
                             <th>Work Status</th>
                             <th>Actions</th>
-                            <th>Actions</th>
+                           
                         </tr>
                     </thead>
                     <tbody>

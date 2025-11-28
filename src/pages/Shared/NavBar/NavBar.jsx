@@ -17,7 +17,7 @@ const NavBar = () => {
 
     const links = <>
         <li><NavLink to="">Services</NavLink></li>
-        <li><NavLink to="">About Us</NavLink></li>
+    
         <li><NavLink to="/send-parcel">Send Parcel</NavLink></li>
         <li><NavLink to="/rider">Be a Rider</NavLink></li>
         <li><NavLink to="/coverage">Coverage</NavLink></li>
@@ -27,6 +27,7 @@ const NavBar = () => {
                 <li><NavLink to="/dashboard/my-parcels">My Parcels</NavLink></li>
             </>
         }
+            <li><NavLink to="">About Us</NavLink></li>
 
     </>
     return (
